@@ -3,9 +3,13 @@ var grid;
 var files;
 
 var n = 4;
+var c;
 
 function setup(){
   createCanvas(600, 400);
+  c = new Clock(width/2 -200,  height/2 + 100, 50);
+  c.setBPM(120);
+  c.start();
 
   files = ['assets/Bass.wav', 'assets/Chords.wav', 'assets/CloseHat.wav', 'assets/kick.wav', 'assets/OpenHat.wav', 'assets/Snare.wav']
 
@@ -28,6 +32,9 @@ function setup(){
     tmpP.style('background-color', 'powderblue');
   }
 
+
+
+
 }
 
 function draw(){
@@ -39,6 +46,7 @@ function draw(){
     for (var i = 0; i < grid.length; i++){
       if(grid[i].waiting) grid[i].toggle();
     }
+    c.start();
   }
   for (var i = 0; i < grid.length; i++){
     grid[i].render();
@@ -47,6 +55,9 @@ function draw(){
   fill(180);
   textSize(22);
   text("Samples", 10, 25);
+  c.update(millis());
+
+  c.render();
 }
 
 function allowDrop(ev) {
