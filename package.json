@@ -2,6 +2,9 @@
   "name": "aramockup",
   "version": "1.0.0",
   "description": "beat sync multi device",
+  "engines":{
+    "node": "6:12:3"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ggyshay/ARAMockUp.git"
+    "url": "https://github.com/ggyshay/ARAMockUp.git"
   },
   "author": "Gabriel Yshay",
   "license": "ISC",
@@ -20,5 +23,12 @@
   "dependencies": {
     "express": "^4.15.4",
     "socket.io": "^2.0.3"
-  }
+  },
+  "keywords":[
+    "node",
+    "heroku",
+    "express",
+    "beatsync"
+  ],
+  "lincense": "MIT"
 }
