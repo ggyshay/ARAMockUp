@@ -1,34 +1,15 @@
 {
-  "name": "aramockup",
+  "name": "aradesk",
   "version": "1.0.0",
-  "description": "beat sync multi device",
-  "engines":{
-    "node": "6:12:3"
-  },
+  "description": "ARA sample sync app",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ggyshay/ARAMockUp.git"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gabriel Yshay",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ggyshay/ARAMockUp/issues"
-  },
-  "homepage": "https://github.com/ggyshay/ARAMockUp#readme",
   "dependencies": {
     "express": "^4.15.4",
-    "socket.io": "^2.0.3"
-  },
-  "keywords":[
-    "node",
-    "heroku",
-    "express",
-    "beatsync"
-  ],
-  "lincense": "MIT"
+    "jquery": "^3.2.1"
+  }
 }

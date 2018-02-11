@@ -1,102 +1,109 @@
-var grid;
-// var menu;
-var files;
+const grid = new Array(); //pad grid
+let gridWidth;
+let gridXOffset;
+let gridYOffset;
+let menuWidth;
 
-var n = 4;
-var c;
-var socket;
-var rsButton;
+const n = 6; //grid's side size
+let clk; //clock instance
+let socket; //not in use at the moment
+let wdir; //working directory
+let padDisplay;
 
-function setup(){
-  createCanvas(600, 400);
-  c = new Clock(width/2 -200,  height/2 + 100, 50);
-  c.setBPM(120);
-  c.start();
+files = ['assets/Bass.wav', 'assets/Chords.wav', 'assets/CloseHat.wav', 'assets/Kick.wav', 'assets/OpenHat.wav', 'assets/Snare.wav']
 
-  files = ['assets/Bass.wav', 'assets/Chords.wav', 'assets/CloseHat.wav', 'assets/kick.wav', 'assets/OpenHat.wav', 'assets/Snare.wav']
+const swap = { //swap object to select pad, file and load file into pad
+  pad: undefined,
+  file: undefined,
 
-  grid = new Array();
+  setPad: function(p) {
+    if (this.pad) this.pad.selected = false;
+    this.pad = p;
+    if (this.pad) this.pad.selected = true;
+  },
 
-  for (var i = 0; i < n*n; i++){
-    var tmpP = new pad(200 + i%n * (width - 200)/n, floor(i/n)*height/n, i);
-    grid.push(tmpP);
+  setFile: function(f) {
+    this.file = f;
+  },
+
+  swapFile: function() {
+    this.pad.load(this.file);
+    this.pad.selected = false;
+    this.pad = undefined;
+    this.file = undefined;
   }
-  //versao valida pra lista toda de arquivos de entrada
-  for (var i = 0; i < files.length; i++){
-    var tmpP = createP(files[i].substring(7, files[i].length-4));
-    tmpP.position(30, 40 + 25*i);
+};
+
+function setup() {
+  createCanvas(800, 600);
+  clk = new Clock(width * 0.12, height * 0.87, width * 0.08);
+  clk.setBPM(120);
+  clk.start();
+  padDisplay = createDiv('');
+
+  for (var i = 0; i < files.length; i++) { //smples while there isnt a menu
+    var tmpP = createP(files[i].substring(7, files[i].length - 4));
+    console.log(tmpP.elt);
+    tmpP.position(30, 40 + 25 * i);
     tmpP.attribute("draggable", "true");
     tmpP.attribute("src", files[i]);
-    tmpP.attribute('ondragstart',  'drag(event)');
+    tmpP.attribute('ondragstart', 'drag(event)');
     tmpP.attribute('id', 'drag' + i);
     tmpP.style('color', '#909090');
     tmpP.style('padding', '5px');
     tmpP.style('background-color', 'powderblue');
   }
 
-  socket = io.connect('http://localhost:8080');
+  gridWidth = width * 0.66;
+  gridXOffset = width * 0.28;
+  gridYOffset = height * 0.08;
+  menuWidth = width / 4;
 
-  socket.on('cueR', function(data){
-    console.log("cue received");
-    grid[data.index].cue(false);
-  } );
-
-  rsButton = createButton("Sync");
-  rsButton.mousePressed(function(){
-    socket.emit('sync', true);
-  });
-
-  socket.on('sync', function(b){
-    c.start();
-  })
-
+  for (var i = 0; i < n * n; i++) { //creating pads
+    let tmpP = new pad(gridXOffset + (i % n) * gridWidth / n, gridYOffset + floor(i / n) * gridWidth / n, i, padDisplay);
+    grid.push(tmpP);
+  }
 }
 
-
-function draw(){
+function draw() {
   background(51);
   stroke(255);
-  line(200, 0, 200, 400);
+  line(menuWidth, 0, menuWidth, height);
 
-  if(c.angle < 0.0001){
-    //console.log("CLOCK");
-    for (var i = 0; i < grid.length; i++){
-      if(grid[i].waiting) grid[i].toggle();
+  if (clk.angle < -PI / 2 + 0.08) { //Clock tick check
+    for (var i = 0; i < grid.length; i++) {
+      if (grid[i].waiting) grid[i].toggle();
+      if (grid[i].on) grid[i].play();
     }
-    //c.start();
   }
-  // if (floor(millis())%2000 < 16){
-  //
-  // }
-  for (var i = 0; i < grid.length; i++){
+
+  //render every pad
+  for (var i = 0; i < grid.length; i++) {
     grid[i].render();
   }
+
   noStroke();
   fill(180);
-  textSize(22);
-  text("Samples", 10, 25);
-  c.update(millis());
+  textSize(0.025 * width);
+  text("Samples", menuWidth * 0.03, 25);
 
-  c.render();
+  //clk update and render
+  clk.update(millis());
+  clk.render();
 }
-
+//
+// functions necessary for drag and drop files(will be taken off soon)
 function allowDrop(ev) {
-    ev.preventDefault();
+  ev.preventDefault();
 }
 
 function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.getAttribute('src'));//ao invez de passar o id, vou passar o src
+  console.log("ev.traget = " + ev.target.getAttribute('src'));
+  ev.dataTransfer.setData("text", ev.target.getAttribute('src')); //ao invez de passar o id, vou passar o src
 }
 
 function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    ev.target.setAttribute('src', data);
-    console.log(ev.target.getAttribute('src'));
-}
-
-function createStyle(positionX, positionY, width, height, border){
-  var s = "position: absolute; left: " + positionX + "px; top: " + positionY + "px; width:" + width + "px; height:" + height + "px; ";
-  if(border) s += "border: 1px solid white;";
-  return s;
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.setAttribute('src', data);
 }

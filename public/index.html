@@ -1,15 +1,72 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src = "sketch.js"></script>
-        <script src = "pad.js"></script>
-        <script src = "p5.js"></script>
-        <script src = "addons/p5.sound.js"></script>
-        <script src = "addons/p5.dom.js"></script>
-        <script src = "clock.js"></script>
-        <script src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-    </head>
-    <body>
-      ta funfando
-    </body>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ARA M</title>
+
+  <script src="./p5.js"></script>
+  <script src="./sketch.js"></script>
+  <script src="./clock.js"></script>
+  <script src="./pad.js"></script>
+  <script src="./addons/p5.dom.js"></script>
+  <script src="./addons/p5.sound.js"></script>
+
+  <style>
+    body{
+      background-color: #313131;
+    }
+    #fileRef{
+      background-color: #04b921;
+      padding: 3px;
+      margin: 5px;
+      max-width: 100px;
+      border-radius: 5px;
+      text-transform: capitalize;
+      color:#2d2d2d
+    }
+    #fileRef:hover{
+      background-color: #046013;
+      padding: 3px;
+      margin: 5px;
+      max-width: 100px;
+      border-radius: 5px;
+      text-transform: capitalize;
+      color:#2d2d2d;
+      cursor: pointer;
+    }
+    #fileDisplay{
+      position: absolute;
+      left: 10px;
+      top:40px;
+      height: 200px;
+      width: 160px;
+      overflow-y: auto;
+      z-index: 1;
+    }
+    #defaultCanvas0{
+      position: absolute;;
+      left: 0px;
+      top: 0px;
+      z-index: -1;
+    }
+    #openBTN{
+      position: absolute;;
+      left: 150px;
+      top:5px;
+      background-color: #FF00FF;
+      color:#313131;
+      padding: 5px;
+      border-radius: 5px;
+
+    }
+    #openBTN:hover{
+      background-color: #AA00AA;
+      color:#313131;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+
 </html>
