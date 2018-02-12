@@ -83,7 +83,6 @@ class Pad {
 
   toggle() { //play pause
     if (this.hasSound()) {
-      console.log("toggle");
       if (this.on) this.sound.stop();
       this.on = !this.on;
       this.waiting = false;
@@ -96,7 +95,6 @@ class Pad {
   }
 
   cue() { //set pad state to waiting
-    console.log("in here now");
     this.waiting = !this.waiting;
   }
 
@@ -154,7 +152,6 @@ class Pad {
     switch (e.type) {
       case "click":
         {
-          console.log("click");
           if (this.addB.clicked()) { //click was over the swap button
             if (swap.pad != this) { //this wasnt selected yet
               swap.setPad(this); //select this
@@ -162,14 +159,12 @@ class Pad {
               swap.setPad(null);
             }
           } else {
-            console.log("in here");
             this.cue();
           }
           break;
         }
       case "drop":
         {
-          console.log(this.element.getAttribute("src"));
           this.load(this.element.getAttribute("src"));
           break;
         }

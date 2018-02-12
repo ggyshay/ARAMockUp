@@ -75,7 +75,6 @@ function draw() {
     for (var i = 0; i < grid.length; i++) {
       if (grid[i].waiting) {
         grid[i].toggle();
-        console.log("here");
       }
       if (grid[i].on) grid[i].play();
     }
