@@ -1,54 +1,106 @@
-function pad(x, y, index, div) {
-  //FISICAL ATTRIBUTES
-  this.l = 0.9 * gridWidth / n; //side size
-  this.x = x + 0.05 * this.l;
-  this.y = y + 0.05 * this.l;
-  this.r = this.l * 0.3;
+class Btn {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.showing = true;
+    this.r = r;
+  }
+  render() { //draw template ellipse
+    fill(0);
+    ellipse(this.x, this.y, this.r * 2);
+  }
 
-  this.index = index; //reference value
+}
 
-  //STATE VARS
-  this.on = false; //playing
-  this.waiting = false; //waiting clock to play
-  this.selected = false;
+class Alert extends Btn {
+  render() {
+    if (this.showing) {
+      noStroke();
+      fill(100);
+      ellipse(this.x, this.y, this.r, this.r);
+      fill(250, 200, 0);
+      textSize(0.6 * this.r);
+      text("!", this.x - this.r * 0.1, this.y + this.r * 0.2);
+    }
+  }
 
-  this.sound = null; //sound reference
-  var self = this;
+  hide() {
+    this.showing = false;
+  }
 
-  this.alert = new Alert(this.x + this.l / 2, this.y + this.l / 2, this.r); //no file alert
+}
 
-  this.element = document.createElement('div'); //cria o elemento html
-  this.element.style = createStyle(this.x, this.y, this.l, this.l, false);
-  this.element.setAttribute('ondrop', 'drop(event)');
-  this.element.setAttribute('ondragover', "allowDrop(event)");
-  this.element.setAttribute('id', 'drop' + index);
-  this.element.setAttribute('src', '');
-  this.element.addEventListener("click", this, false);
-  this.element.addEventListener("drop", this, false);
-  //$("#padDisplay")[0].appendChild(this.element);
-  div.child(this.element);
+class OpenFileB extends Btn {
+  render() {
+    if (this.showing) {
+      noStroke();
+      fill(100);
+      ellipse(this.x, this.y, this.r, this.r);
+      fill(0, 170, 22);
+      textSize(this.r);
+      text("+", this.x - this.r * 0.32, this.y + this.r * 0.4);
+    }
+  }
 
-  this.addB = new OpenFileB(this.x + this.l * 0.9, this.y + this.l * 0.1, this.l * 0.2); //swap file button
+  clicked() {
+    return dist(mouseX, mouseY, this.x, this.y) < this.r;
+  }
 
-  this.toggle = function() { //play pause
+}
+
+class Pad {
+  constructor(x, y, index, div) {
+    //FISICAL ATTRIBUTES
+    this.l = 0.9 * gridWidth / n; //side size
+    this.x = x + 0.05 * this.l;
+    this.y = y + 0.05 * this.l;
+    this.r = this.l * 0.3;
+
+    this.index = index; //reference value
+
+    //STATE VARS
+    this.on = false; //playing
+    this.waiting = false; //waiting clock to play
+    this.selected = false;
+
+    this.sound = null; //sound reference
+
+    this.alert = new Alert(this.x + this.l / 2, this.y + this.l / 2, this.r); //no file alert
+
+    this.element = document.createElement('div'); //cria o elemento html
+    this.element.style = createStyle(this.x, this.y, this.l, this.l, false);
+    this.element.setAttribute('ondrop', 'drop(event)');
+    this.element.setAttribute('ondragover', "allowDrop(event)");
+    this.element.setAttribute('id', 'drop' + index);
+    this.element.setAttribute('src', '');
+    this.element.addEventListener("click", this, false);
+    this.element.addEventListener("drop", this, false);
+    //$("#padDisplay")[0].appendChild(this.element);
+    div.child(this.element);
+
+    this.addB = new OpenFileB(this.x + this.l * 0.9, this.y + this.l * 0.1, this.l * 0.2); //swap file button
+  }
+
+  toggle() { //play pause
     if (this.hasSound()) {
+      console.log("toggle");
       if (this.on) this.sound.stop();
       this.on = !this.on;
       this.waiting = false;
     }
   }
 
-  this.play = function() {
+  play() {
     this.sound.playMode("restart");
     this.sound.play();
   }
 
-  this.cue = function(clicked) { //put pad on waiting to play
-    self.waiting = !self.waiting;
+  cue() { //set pad state to waiting
+    console.log("in here now");
+    this.waiting = !this.waiting;
   }
 
-  this.load = function(s) { //load sound function, s: path
-
+  load(s) { //load sound function, s: path
     if (this.on) this.toggle(); //turn it off before load sound
 
     this.sound = loadSound(s);
@@ -61,7 +113,7 @@ function pad(x, y, index, div) {
     console.log('loaded:' + s);
   }
 
-  this.render = function() {
+  render() {
 
     if (!this.hasSound()) {
       noStroke();
@@ -93,86 +145,89 @@ function pad(x, y, index, div) {
     this.addB.render();
   }
 
-  this.hasSound = function() {
+  hasSound() {
     return this.sound != null && this.sound.isLoaded();
-  }
-}
 
-pad.prototype.handleEvent = function(e) {
-  switch (e.type) {
-    case "click":
-      {
-        if (this.addB.clicked()) { //click was over the swap button
-          if (swap.pad != this) { //this wasnt selected yet
-            swap.setPad(this); //select this
-          } else { //this was selected
-            swap.setPad(null);
+  }
+
+  handleEvent(e) {
+    switch (e.type) {
+      case "click":
+        {
+          console.log("click");
+          if (this.addB.clicked()) { //click was over the swap button
+            if (swap.pad != this) { //this wasnt selected yet
+              swap.setPad(this); //select this
+            } else { //this was selected
+              swap.setPad(null);
+            }
+          } else {
+            console.log("in here");
+            this.cue();
           }
-        } else {
-          this.cue(true);
+          break;
         }
-        break;
-      }
-    case "drop":
-      {
-        console.log(this.element.getAttribute("src"));
-        this.load(this.element.getAttribute("src"));
-        break;
-      }
-    default:
-      {
-        console.log("Unbound Operation");
-        break
-      }
-      // add other event types if needed
-  }
-}
-
-function Alert(x, y, r) { //no File Alert
-  this.x = x;
-  this.y = y;
-  this.showing = true;
-  this.r = r;
-
-  this.render = function() {
-    if (this.showing) {
-      noStroke();
-      fill(100);
-      ellipse(this.x, this.y, this.r, this.r);
-      fill(250, 200, 0);
-      textSize(0.6 * this.r);
-      text("!", this.x - this.r * 0.1, this.y + this.r * 0.2);
+      case "drop":
+        {
+          console.log(this.element.getAttribute("src"));
+          this.load(this.element.getAttribute("src"));
+          break;
+        }
+      default:
+        {
+          console.log("Unbound Operation");
+          break
+        }
+        // add other event types if needed
     }
   }
-  this.hide = function() {
-    this.showing = false;
-  }
 }
 
-function OpenFileB(x, y, r) { //open file button
-  this.x = x;
-  this.y = y;
-  this.r = r;
-  this.showing = true;
+// function Alert(x, y, r) { //no File Alert
+//   this.x = x;
+//   this.y = y;
+//   this.showing = true;
+//   this.r = r;
+//
+//   this.render = function() {
+//     if (this.showing) {
+//       noStroke();
+//       fill(100);
+//       ellipse(this.x, this.y, this.r, this.r);
+//       fill(250, 200, 0);
+//       textSize(0.6 * this.r);
+//       text("!", this.x - this.r * 0.1, this.y + this.r * 0.2);
+//     }
+//   }
+//   this.hide = function() {
+//     this.showing = false;
+//   }
+// }
 
-  this.render = function() {
-    if (this.showing) {
-      noStroke();
-      fill(100);
-      ellipse(this.x, this.y, this.r, this.r);
-      fill(0, 170, 22);
-      textSize(this.r);
-      text("+", this.x - this.r * 0.32, this.y + this.r * 0.4);
-    }
-  }
-
-  this.clicked = function() {
-    return dist(mouseX, mouseY, this.x, this.y) < this.r;
-  }
-}
+// function OpenFileB(x, y, r) { //open file button
+//   this.x = x;
+//   this.y = y;
+//   this.r = r;
+//   this.showing = true;
+//
+//   this.render = function() {
+//     if (this.showing) {
+//       noStroke();
+//       fill(100);
+//       ellipse(this.x, this.y, this.r, this.r);
+//       fill(0, 170, 22);
+//       textSize(this.r);
+//       text("+", this.x - this.r * 0.32, this.y + this.r * 0.4);
+//     }
+//   }
+//
+//   this.clicked = function() {
+//     return dist(mouseX, mouseY, this.x, this.y) < this.r;
+//   }
+// }
 
 function createStyle(positionX, positionY, width, height, border) { //just to not have it messed up there
-  var s = "position: absolute; left: " + positionX + "px; top: " + positionY + "px; width:" + width + "px; height:" + height + "px; ";
+  let s = "position: absolute; left: " + positionX + "px; top: " + positionY + "px; width:" + width + "px; height:" + height + "px; ";
   if (border) s += "border: 1px solid white;";
   return s;
 }

@@ -1,0 +1,42 @@
+body {
+  background-color: #313131;
+}
+
+.fileRef {
+  background-color: #F0F;
+  padding: 3px;
+  margin: 5px;
+  max-width: 100px;
+  border-radius: 5px;
+  text-transform: capitalize;
+  color: #2d2d2d
+}
+
+.fileRef:hover {
+  background-color: #b904b9;
+  padding: 3px;
+  margin: 5px;
+  max-width: 100px;
+  border-radius: 5px;
+  text-transform: capitalize;
+  color: #2d2d2d;
+  cursor: pointer;
+}
+
+#fileDisplay {
+  position: absolute;
+  left: 10px;
+  top: 40px;
+  height: 200px;
+  width: 160px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+#defaultCanvas0 {
+  position: absolute;
+  ;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}
